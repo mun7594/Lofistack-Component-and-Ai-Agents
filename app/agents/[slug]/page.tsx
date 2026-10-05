@@ -1,6 +1,7 @@
 import { getAgentBySlug, agents } from "@/lib/data/agents";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CopyPromptButton } from "@/lib/components/CopyButton";
 
 export function generateStaticParams() {
   return agents.map((agent) => ({
@@ -8,8 +9,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const agent = getAgentBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const agent = getAgentBySlug(slug);
   if (!agent) {
     return {
       title: "Agent Not Found",
@@ -21,8 +23,9 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   };
 }
 
-export default function AgentDetail({ params }: { params: { slug: string } }) {
-  const agent = getAgentBySlug(params.slug);
+export default async function AgentDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const agent = getAgentBySlug(slug);
 
   if (!agent) {
     notFound();

@@ -1,6 +1,7 @@
 import { getComponentBySlug, components } from "@/lib/data/components";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CopyButton, CopyPromptButton } from "@/lib/components/CopyButton";
 
 export function generateStaticParams() {
   return components.map((component) => ({
@@ -8,8 +9,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const component = getComponentBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const component = getComponentBySlug(slug);
   if (!component) {
     return {
       title: "Component Not Found",
@@ -21,12 +23,13 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   };
 }
 
-export default function ComponentDetail({
+export default async function ComponentDetail({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const component = getComponentBySlug(params.slug);
+  const { slug } = await params;
+  const component = getComponentBySlug(slug);
 
   if (!component) {
     notFound();
@@ -234,14 +237,7 @@ export default function ComponentDetail({
                         <h4 className="font-mono text-sm font-semibold text-gray-900">
                           {file.name}
                         </h4>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(file.content);
-                          }}
-                          className="text-xs px-2 py-1 bg-gray-900 text-white rounded hover:bg-gray-800"
-                        >
-                          Copy
-                        </button>
+                        <CopyButton text={file.content} />
                       </div>
                       <pre className="bg-gray-900 text-gray-100 p-4 rounded text-xs overflow-x-auto font-mono">
                         {file.content}
@@ -262,14 +258,7 @@ export default function ComponentDetail({
                 <div className="bg-white rounded p-4 font-mono text-sm text-gray-800 mb-4 max-h-64 overflow-y-auto whitespace-pre-wrap break-words">
                   {component.prompt}
                 </div>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(component.prompt);
-                  }}
-                  className="text-sm px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  Copy Prompt
-                </button>
+                <CopyPromptButton prompt={component.prompt} />
               </div>
             </section>
 
