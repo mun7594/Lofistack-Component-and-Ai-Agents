@@ -27,6 +27,11 @@ export default function ComponentCard({ component }: ComponentCardProps) {
                 <p className="text-gray-700 font-bold text-lg">Before After</p>
                 <p className="text-gray-600 text-sm">Slider</p>
               </div>
+            ) : component.slug === "submit-form-button" ? (
+              <div className="text-center">
+                <p className="text-gray-700 font-bold text-lg">Flip Animated</p>
+                <p className="text-gray-600 text-sm">Button</p>
+              </div>
             ) : (
               <svg
                 className="absolute inset-0 w-full h-full text-gray-300 p-8"

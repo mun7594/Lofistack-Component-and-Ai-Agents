@@ -5,6 +5,7 @@ import { Component } from "@/lib/data/components";
 import Link from "next/link";
 import { CopyButton, CopyPromptButton } from "./CopyButton";
 import { BeforeAfterSliderDemo } from "./BeforeAfterSliderDemo";
+import { SubmitFormButtonDemo } from "./SubmitFormButtonDemo";
 
 export function ComponentDetailClient({
   component,
@@ -238,6 +239,8 @@ export function ComponentDetailClient({
                 <div className={`mx-auto transition-all duration-300 ${getViewportSize()}`}>
                   {slug === "before-after-slider" ? (
                     <BeforeAfterSliderDemo />
+                  ) : slug === "submit-form-button" ? (
+                    <SubmitFormButtonDemo />
                   ) : (
                     <div className="bg-white rounded-lg p-8 h-96 flex items-center justify-center border border-gray-300">
                       <div className="text-center">
