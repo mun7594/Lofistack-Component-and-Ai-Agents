@@ -20,21 +20,28 @@ export default function ComponentCard({ component }: ComponentCardProps) {
       <div className="group cursor-pointer h-full">
         <div className="bg-white rounded-lg overflow-hidden border border-gray-200 transition-all duration-300 hover:border-gray-400 hover:shadow-lg hover:scale-105 h-full flex flex-col">
           {/* Thumbnail */}
-          <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+          <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <svg
-              className="absolute inset-0 w-full h-full text-gray-300 p-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            {component.slug === "before-after-slider" ? (
+              <div className="text-center">
+                <p className="text-gray-700 font-bold text-lg">Before After</p>
+                <p className="text-gray-600 text-sm">Slider</p>
+              </div>
+            ) : (
+              <svg
+                className="absolute inset-0 w-full h-full text-gray-300 p-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            )}
           </div>
 
           {/* Content */}

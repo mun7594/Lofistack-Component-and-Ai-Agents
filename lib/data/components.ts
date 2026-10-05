@@ -628,6 +628,238 @@ export const LoadingSpinner = ({
       "Customizable colors",
     ],
   },
+  {
+    id: "6",
+    slug: "before-after-slider",
+    name: "Before-After Slider",
+    type: "slider",
+    description: "Interactive image comparison slider with drag and touch support for before/after transformations",
+    longDescription:
+      "A professional-grade before-after image slider component that lets users compare two images by dragging a divider across. Perfect for portfolios, renovation companies, makeover services, or any transformation showcase. Features smooth drag interactions, responsive design, full mobile/touch support, and accessible labels. The component is lightweight, performant, and easy to customize with custom labels and aspect ratios.",
+    thumbnail: "",
+    createdDate: "2026-10-12",
+    week: 2,
+    componentNumber: 2,
+    category: "Slider",
+    tags: ["Interactive", "Comparison", "Image Slider", "Drag-Drop", "Mobile-Friendly", "Transformation"],
+    dependencies: "React 18+",
+    techStack: ["React", "TypeScript", "Tailwind CSS", "Browser APIs"],
+    files: [
+      {
+        name: "BeforeAfterSlider.tsx",
+        language: "typescript",
+        content: `"use client";
+
+import { useState, useRef, useEffect } from "react";
+
+interface BeforeAfterSliderProps {
+  beforeImage: string;
+  afterImage: string;
+  beforeLabel?: string;
+  afterLabel?: string;
+  aspectRatio?: "square" | "16:9" | "4:3" | "auto";
+}
+
+export function BeforeAfterSlider({
+  beforeImage,
+  afterImage,
+  beforeLabel = "Before",
+  afterLabel = "After",
+  aspectRatio = "16:9",
+}: BeforeAfterSliderProps) {
+  const [sliderPosition, setSliderPosition] = useState(50);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+
+  const getAspectRatioClass = () => {
+    switch (aspectRatio) {
+      case "square":
+        return "aspect-square";
+      case "4:3":
+        return "aspect-video";
+      case "16:9":
+        return "aspect-video";
+      default:
+        return "w-full";
+    }
+  };
+
+  const handleStart = () => {
+    isDragging.current = true;
+  };
+
+  const handleEnd = () => {
+    isDragging.current = false;
+  };
+
+  const handleMove = (clientX: number) => {
+    if (!isDragging.current || !containerRef.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+
+    setSliderPosition(percentage);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    handleMove(e.clientX);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (e.touches.length > 0) {
+      handleMove(e.touches[0].clientX);
+    }
+  };
+
+  useEffect(() => {
+    if (isDragging.current) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("touchmove", handleTouchMove);
+      document.addEventListener("mouseup", handleEnd);
+      document.addEventListener("touchend", handleEnd);
+
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("mouseup", handleEnd);
+        document.removeEventListener("touchend", handleEnd);
+      };
+    }
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className={\`relative overflow-hidden bg-gray-200 rounded-lg cursor-col-resize select-none \${getAspectRatioClass()}\`}
+      onMouseDown={handleStart}
+      onTouchStart={handleStart}
+    >
+      {/* After Image (Background) */}
+      <div className="absolute inset-0">
+        <img
+          src={afterImage}
+          alt="After"
+          className="w-full h-full object-cover"
+          draggable={false}
+        />
+        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded text-sm font-medium">
+          After
+        </div>
+      </div>
+
+      {/* Before Image (Clipped) */}
+      <div
+        className="absolute inset-0 overflow-hidden transition-none"
+        style={{ width: \`\${sliderPosition}%\` }}
+      >
+        <img
+          src={beforeImage}
+          alt="Before"
+          className="w-full h-full object-cover"
+          style={{ width: \`\${containerRef.current?.offsetWidth}px\` }}
+          draggable={false}
+        />
+        <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded text-sm font-medium">
+          Before
+        </div>
+      </div>
+
+      {/* Slider Handle */}
+      <div
+        className="absolute top-0 bottom-0 w-1 bg-white transition-none"
+        style={{ left: \`\${sliderPosition}%\`, transform: "translateX(-50%)" }}
+      >
+        {/* Handle Circle */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center">
+          {/* Arrow Icons */}
+          <div className="flex items-center justify-center gap-1">
+            <svg className="w-4 h-4 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <svg className="w-4 h-4 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}`,
+      },
+      {
+        name: "index.ts",
+        language: "typescript",
+        content: `export { BeforeAfterSlider } from './BeforeAfterSlider'`,
+      },
+    ],
+    prompt: `Create a before-after image comparison slider component in React with these features:
+    - Two images overlaid (before on left, after on right)
+    - Draggable slider divider that users can drag with mouse or touch
+    - Visual slider handle (white vertical line with circular handle in center)
+    - Arrow icons on handle to indicate draggability (left and right arrows)
+    - Mouse drag support (click and drag to compare images)
+    - Full touch/swipe support for mobile devices
+    - Before/After labels positioned on bottom-left and bottom-right of images
+    - Labels have semi-transparent dark background for readability
+    - Responsive design that scales to container width
+    - Support for different aspect ratios (square, 16:9, 4:3, auto)
+    - Cursor changes to col-resize to indicate the divider is draggable
+    - Prevent default image dragging behavior
+    - Smooth animations and transitions
+    - TypeScript with full prop typing
+    - Client Component for proper event handling`,
+    codeLink: "https://github.com/mun7594/Lofistack-Component-and-Ai-Agents",
+    liveLink: "https://lofistack-component-and-ai-agents.vercel.app/components/before-after-slider",
+    accessibility:
+      "Semantic HTML with proper alt text on images. Clear visual handle with 48px touch target (WCAG compliance). High contrast white handle on images. Labels visible with good color contrast (black text on semi-transparent background). No auto-playing animations that require user interaction to control.",
+    relatedProps: [
+      {
+        name: "beforeImage",
+        type: "string",
+        default: "required",
+        description: "URL of the before/original image",
+      },
+      {
+        name: "afterImage",
+        type: "string",
+        default: "required",
+        description: "URL of the after/transformed image",
+      },
+      {
+        name: "beforeLabel",
+        type: "string",
+        default: '"Before"',
+        description: "Text label displayed on the before image (bottom-left)",
+      },
+      {
+        name: "afterLabel",
+        type: "string",
+        default: '"After"',
+        description: "Text label displayed on the after image (bottom-right)",
+      },
+      {
+        name: "aspectRatio",
+        type: '"square" | "16:9" | "4:3" | "auto"',
+        default: '"16:9"',
+        description: "Aspect ratio of the slider container (controls width:height ratio)",
+      },
+    ],
+    features: [
+      "Smooth drag interaction on mouse and touch devices",
+      "Visual slider handle with directional arrow icons",
+      "Before/After labels with semi-transparent backgrounds",
+      "Flexible aspect ratio support (square, 16:9, 4:3, auto)",
+      "Fully responsive (adapts to all screen sizes)",
+      "WCAG compliant with high contrast colors",
+      "48px circular handle (touch-friendly on mobile)",
+      "Prevents image dragging while using the slider",
+      "Visual feedback with col-resize cursor",
+      "White divider line for clear separation",
+      "Built with TypeScript for type safety",
+      "Perfect for transformation showcases (renovations, makeovers, etc.)",
+    ],
+  },
 ];
 
 // Helper to get latest components (for homepage)
