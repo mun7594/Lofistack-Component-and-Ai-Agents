@@ -26,7 +26,7 @@ export function BeforeAfterSlider({
       case "square":
         return "aspect-square";
       case "4:3":
-        return "aspect-video";
+        return "aspect-[4/3]";
       case "16:9":
         return "aspect-video";
       default:
@@ -52,6 +52,29 @@ export function BeforeAfterSlider({
     if (e.touches.length > 0) {
       setIsDragging(true);
       updateSliderPosition(e.touches[0].clientX);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const step = 5; // 5% per key press
+    let newPosition = sliderPosition;
+
+    if (e.key === "ArrowLeft") {
+      newPosition = Math.max(0, sliderPosition - step);
+      e.preventDefault();
+    } else if (e.key === "ArrowRight") {
+      newPosition = Math.min(100, sliderPosition + step);
+      e.preventDefault();
+    } else if (e.key === "Home") {
+      newPosition = 0;
+      e.preventDefault();
+    } else if (e.key === "End") {
+      newPosition = 100;
+      e.preventDefault();
+    }
+
+    if (newPosition !== sliderPosition) {
+      setSliderPosition(newPosition);
     }
   };
 
@@ -95,6 +118,13 @@ export function BeforeAfterSlider({
       className={`relative overflow-hidden bg-gray-200 rounded-lg cursor-col-resize select-none ${getAspectRatioClass()}`}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
+      onKeyDown={handleKeyDown}
+      role="slider"
+      aria-label="Image comparison slider"
+      aria-valuenow={Math.round(sliderPosition)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      tabIndex={0}
     >
       {/* After Image (Background) */}
       <div className="absolute inset-0 w-full h-full">
